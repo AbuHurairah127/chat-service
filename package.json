@@ -5,8 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node lib/index.js"
+    "start": "tsc --watch && nodemon lib/index.js"
   },
   "author": "",
   "license": "ISC",

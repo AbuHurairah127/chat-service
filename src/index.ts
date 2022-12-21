@@ -1,14 +1,19 @@
 import * as dotenv from "dotenv";
 import connectToMongoDB from "./config/db.js";
-import express from "express";
+import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
+// import { router } from "./routes/users.js";
 dotenv.config();
 const _port: string | undefined = process.env.PORT;
-let app = express();
+const app: Application = express();
 connectToMongoDB();
-app.use(express.json);
+//  middle wares
 app.use(cors());
+// app.use("/auth", router);
+app.get("/", () => {
+  console.log("Abu hurairah");
+});
 // Checking if the server is successfully started or not
 app.listen(_port, () => {
-  console.log(`Server started working on port ${_port}`);
+  console.log(`Server started working on port is working on ${_port}`);
 });
