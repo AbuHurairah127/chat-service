@@ -1,6 +1,14 @@
 import * as dotenv from "dotenv";
-import port1 from "./config/db.js";
-console.log("🚀 ~ file: index.ts:3 ~ port1", port1);
+import connectToMongoDB from "./config/db.js";
+import express from "express";
+import cors from "cors";
 dotenv.config();
-const port: string | undefined = process.env.PORT;
-console.log(port);
+const _port: string | undefined = process.env.PORT;
+let app = express();
+connectToMongoDB();
+app.use(express.json);
+app.use(cors());
+// Checking if the server is successfully started or not
+app.listen(_port, () => {
+  console.log(`Server started working on port ${_port}`);
+});
