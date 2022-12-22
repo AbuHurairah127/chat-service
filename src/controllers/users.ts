@@ -17,6 +17,11 @@ type ReqTesting = {
   userName: string;
   phoneNumber: string;
 };
+type userID = {
+  user: {
+    id: string;
+  };
+};
 export const register = async (req: Request, res: Response) => {
   try {
     /* Checking if the request body has any errors. If it does, it will return a 400 status code with the
@@ -24,6 +29,14 @@ export const register = async (req: Request, res: Response) => {
     const errors: Result<ValidationError> = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
+    }
+    let isAddress: ReqTesting | null = await User.findOne({
+      walletAddress: req.body.walletAddress,
+    });
+    if (isAddress) {
+      return res
+        .status(400)
+        .send("Sorry a user with this wallet address already exists.");
     }
     /* This is checking if the email address already exists in the database. If it does, it will return a
     400 status code with the message "Sorry a user with this email address already exists." */
@@ -54,8 +67,9 @@ export const register = async (req: Request, res: Response) => {
       password: secPass,
       email: req.body.email,
       phoneNumber: req.body.phoneNumber,
+      walletAddress: req.body.walletAddress,
     });
-    const data = {
+    const data: userID = {
       user: { id: newUser.id },
     };
     const authToken: string = jwt.sign(data, JWT_SECRET_KEY);
