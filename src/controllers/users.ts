@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/users.js";
 import { Result, ValidationError, validationResult } from "express-validator";
 import { Request, Response, NextFunction } from "express";
-
+import { Data } from "../utils/auth.js";
 let JWT_SECRET_KEY: string;
 if (typeof process.env.SECRET_KEY === "string") {
   JWT_SECRET_KEY = process.env.SECRET_KEY;
@@ -115,6 +115,15 @@ export const login = async (req: Request, res: Response) => {
     res.json({
       authToken: authToken,
     });
+  } catch (error) {
+    res.status(500).json("Internal server error");
+  }
+};
+export const userData = async (req: Data, res: Response) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId).select("-password");
+    res.status(200).json({ user });
   } catch (error) {
     res.status(500).json("Internal server error");
   }

@@ -2,10 +2,10 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { Jwt, JwtPayload } from "jsonwebtoken";
 const JWT_SECRET_KEY: string | undefined = process.env.SECRET_KEY;
 
-interface IGetUserAuthInfoRequest extends Request {
+export interface IGetUserAuthInfoRequest extends Request {
   user: string; // or any other type
 }
-interface Data extends JwtPayload {
+export interface Data extends JwtPayload {
   user: {
     id: string;
   };

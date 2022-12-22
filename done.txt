@@ -1,0 +1,14 @@
+-Register user done
+	-email 
+	-username(unique)
+	-first name(length minimum 3)
+	-last name(length minimum :3)
+	-password(length minimum:5)
+	-phoneNumber(length minimum:11)
+	-walletAddress (length minimumm 26,unique)
+-Login user 
+	-email
+	-password
+	-wallet address
+-getting user data 
+	-authToken(for persistent login)

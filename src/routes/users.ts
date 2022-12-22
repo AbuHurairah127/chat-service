@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 import { body } from "express-validator";
-import { login, register } from "../controllers/users.js";
+import { login, register, userData } from "../controllers/users.js";
 import { authUser } from "../utils/auth.js";
 let router = express.Router();
 
@@ -34,6 +34,6 @@ router.post("/login", [
   login,
 ]);
 // Getting user data after sending the authToken
-router.get("/user-data", authUser);
+router.get("/user-data", authUser, userData);
 
 export { router };
