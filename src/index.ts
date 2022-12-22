@@ -3,6 +3,7 @@ import connectToMongoDB from "./config/db.js";
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import { router } from "./routes/users.js";
+import { authUser } from "./utils/auth.js";
 dotenv.config();
 const _port: string | undefined = process.env.PORT;
 const app: Application = express();
