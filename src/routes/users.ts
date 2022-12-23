@@ -1,8 +1,8 @@
-import express from "express";
+import express, { Router } from "express";
 import { body } from "express-validator";
 import { login, register, userData } from "../controllers/users.js";
 import { authUser } from "../utils/auth.js";
-let router = express.Router();
+let router: Router = express.Router();
 
 /* A router.post method that is used to validate the user input and then call the REGISTER controller function. */
 router.post(

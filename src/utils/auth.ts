@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import jwt, { Jwt, JwtPayload } from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 const JWT_SECRET_KEY: string | undefined = process.env.SECRET_KEY;
 
 export interface IGetUserAuthInfoRequest extends Request {

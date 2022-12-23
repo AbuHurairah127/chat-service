@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/users.js";
 import { Result, ValidationError, validationResult } from "express-validator";
 import { Request, Response, NextFunction } from "express";
-import { Data, IGetUserAuthInfoRequest } from "../utils/auth.js";
+import { IGetUserAuthInfoRequest } from "../utils/auth.js";
 let JWT_SECRET_KEY: string;
 if (typeof process.env.SECRET_KEY === "string") {
   JWT_SECRET_KEY = process.env.SECRET_KEY;
