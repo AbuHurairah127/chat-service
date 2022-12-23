@@ -1,4 +1,4 @@
-import express, { Router } from "express";
+import express from "express";
 import { body } from "express-validator";
 import { login, register, userData } from "../controllers/users.js";
 import { authUser } from "../utils/auth.js";
