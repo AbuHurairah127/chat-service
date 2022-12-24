@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 interface IDCollection {
   userId: string;
   socketId: string;
