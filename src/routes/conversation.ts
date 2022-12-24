@@ -1,9 +1,12 @@
 import express, { Router } from "express";
-import { body, check } from "express-validator";
-import { newConversation } from "../controllers/conversation.js";
+import { body } from "express-validator";
+import {
+  getAllConversationsOfAUser,
+  newConversation,
+} from "../controllers/conversation.js";
 import { authUser } from "../utils/auth.js";
 let conversationRouter: Router = express.Router();
-
+// Route to introduce a new conversation
 conversationRouter.post(
   "/new-conversation",
   [
@@ -12,5 +15,11 @@ conversationRouter.post(
   ],
   authUser,
   newConversation
+);
+// Route to GET all the conversation of users
+conversationRouter.get(
+  "/my-all-conversations/:userID",
+  authUser,
+  getAllConversationsOfAUser
 );
 export { conversationRouter };

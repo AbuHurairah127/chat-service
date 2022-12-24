@@ -3,10 +3,7 @@ const { Schema } = mongoose;
 
 const conversationSchema = new Schema({
   members: {
-    type: {
-      senderID: String,
-      receiverID: String,
-    },
+    type: Array,
   },
   createdAt: {
     type: Date,
