@@ -1,7 +1,6 @@
 import Conversation from "../models/conversation.js";
 import { Result, ValidationError, validationResult } from "express-validator";
 import { Request, Response, NextFunction } from "express";
-import conversation from "../models/conversation.js";
 /**
  * It creates a new conversation between two users.
  * @param {Request} req - Request, res: Response
@@ -39,7 +38,7 @@ export const getAllConversationsOfAUser = async (
   res: Response
 ) => {
   try {
-    const conversations = await conversation.find({
+    const conversations = await Conversation.find({
       members: { $in: [req.params.userID] },
     });
     console.log(req.params.userID);
