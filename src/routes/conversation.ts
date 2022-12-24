@@ -1,10 +1,10 @@
 import express, { Router } from "express";
 import { body } from "express-validator";
+import { authUser } from "../utils/auth.js";
 import {
   getAllConversationsOfAUser,
   newConversation,
 } from "../controllers/conversation.js";
-import { authUser } from "../utils/auth.js";
 let conversationRouter: Router = express.Router();
 // Route to introduce a new conversation
 conversationRouter.post(
