@@ -10,7 +10,6 @@ export const authUser = (req, res, next) => {
         else {
             if (typeof JWT_SECRET_KEY === "string") {
                 data = jwt.verify(token, JWT_SECRET_KEY);
-                console.log("🚀 ~ file: auth.ts:14 ~ authUser ~ data", data);
                 req.user = data.user.id;
             }
         }

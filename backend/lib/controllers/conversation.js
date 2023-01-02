@@ -33,8 +33,9 @@ export const getAllConversationsOfAUser = async (req, res) => {
     try {
         const conversations = await Conversation.find({
             members: { $in: [req.params.userID] },
-        });
-        console.log(req.params.userID);
+        })
+            .skip(Number(req.params.startCount))
+            .limit(Number(req.params.startCount + 15));
         res.status(200).json(conversations);
     }
     catch (error) {

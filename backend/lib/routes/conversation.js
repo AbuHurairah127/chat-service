@@ -9,5 +9,5 @@ conversationRouter.post("/new-conversation", [
     body("receiverID", "Enter a valid receiverID").isLength({ min: 1 }),
 ], authUser, newConversation);
 // Route to GET all the conversation of users
-conversationRouter.get("/my-all-conversations/:userID", authUser, getAllConversationsOfAUser);
+conversationRouter.get("/my-all-conversations/:userID/:startCount", authUser, getAllConversationsOfAUser);
 export { conversationRouter };
