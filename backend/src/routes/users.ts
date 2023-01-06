@@ -9,7 +9,7 @@ router.post(
   "/register",
   //   Validation Applied
   [
-    body("userName", "Please enter the username.").isLength({ min: 3 }),
+    body("username", "Please enter the username.").isLength({ min: 3 }),
     body("secretRecoveryPhrase", "please enter your first name.").isLength({
       min: 3,
     }),

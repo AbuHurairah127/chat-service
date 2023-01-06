@@ -8,20 +8,6 @@ import {
 import { Request, Response } from "express";
 // import { IGetUserAuthInfoRequest } from "../utils/auth.js";
 import { ethers } from "ethers";
-let JWT_SECRET_KEY: string;
-if (typeof process.env.SECRET_KEY === "string") {
-  JWT_SECRET_KEY = process.env.SECRET_KEY;
-}
-
-// type Aliases for different objects.
-type ReqTesting = {
-  firstName: string;
-  lastName: string;
-  password: string;
-  email: string;
-  userName: string;
-  phoneNumber: string;
-};
 
 type userID = {
   user: {
@@ -39,9 +25,9 @@ export const register = async (req: Request, res: Response) => {
     }
     /* Checking if the wallet address already exists in the database. If it does, it will return a
        400 status code with the message "Sorry a user with this wallet address already exists." */
-
-    const newUser = await User.create({
-      userName: req.body.userName,
+    console.log("Before creating a new user");
+    const _user = await User.create({
+      username: req.body.username,
       walletAddress: req.body.walletAddress,
       signedMessageHash: req.body.signedMessageHash,
       secretRecoveryPhrase: req.body.secretRecoveryPhrase,
@@ -49,7 +35,7 @@ export const register = async (req: Request, res: Response) => {
     console.log("user creating");
 
     const data: userID = {
-      user: { id: newUser.id },
+      user: { id: _user.id },
     };
     res.status(200).json(req.body.signedMessageHash);
   } catch (error) {
