@@ -25,8 +25,8 @@ router.post(
 );
 // Getting user logged in with email, password and Waller Address
 router.post("/login", [
-  body("password", "Password is incorrect").isLength({ min: 5 }),
-  body("email", "Please enter a valid email address.").isEmail(),
+  body("message", "Password is incorrect").isLength({ min: 5 }),
+  body("signedMessageHash", "Please enter a valid email address.").isEmail(),
   body("walletAddress", "Please enter a valid wallet address.").isLength({
     min: 26,
   }),

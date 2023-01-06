@@ -23,21 +23,18 @@ export const register = async (req: Request, res: Response) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    /* Checking if the wallet address already exists in the database. If it does, it will return a
-       400 status code with the message "Sorry a user with this wallet address already exists." */
-    console.log("Before creating a new user");
+    /* Creating a new user in the database. */
     const _user = await User.create({
       username: req.body.username,
       walletAddress: req.body.walletAddress,
       signedMessageHash: req.body.signedMessageHash,
       secretRecoveryPhrase: req.body.secretRecoveryPhrase,
     });
-    console.log("user creating");
 
     const data: userID = {
       user: { id: _user.id },
     };
-    res.status(200).json(req.body.signedMessageHash);
+    res.status(200).json(data);
   } catch (error) {
     res.status(500).json("Some error occurred");
   }
@@ -48,7 +45,12 @@ export const login = async (req: Request, res: Response) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { signedMessageHash, walletAddress, message } = req.body;
+    const {
+      signedMessageHash,
+      walletAddress,
+      message,
+    }: { signedMessageHash: string; walletAddress: string; message: string } =
+      req.body;
     let user = await User.findOne({ walletAddress });
     if (!user) {
       return res.status(400).json({
@@ -59,7 +61,9 @@ export const login = async (req: Request, res: Response) => {
       message,
       signedMessageHash
     );
-    console.log(signedMessageHashCompare);
+    if (signedMessageHashCompare !== walletAddress) {
+      return false;
+    }
     const data = {
       user: {
         id: user.id,
