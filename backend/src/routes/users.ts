@@ -9,6 +9,13 @@ router.post(
   "/register",
   //   Validation Applied
   [
+    body("userName", "Please enter the username.").isLength({ min: 3 }),
+    body("secretRecoveryPhrase", "please enter your first name.").isLength({
+      min: 3,
+    }),
+    body("signedMessageHash", "Please enter your phone number.").isLength({
+      min: 11,
+    }),
     body("walletAddress", "Please enter your wallet address.").isLength({
       min: 26,
     }),

@@ -5,6 +5,8 @@ const userSchema = new Schema(
   {
     secretRecoveryPhrase: { type: "string", required: true },
     signedMessageHash: { type: "string", required: true },
+    walletAddress: { type: "string", required: true },
+    username: { type: "string", required: true },
   },
   { timestamps: true }
 );
