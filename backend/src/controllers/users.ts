@@ -64,12 +64,12 @@ export const login = async (req: Request, res: Response) => {
     if (signedMessageHashCompare !== walletAddress) {
       return false;
     }
-    const data = {
+    const data: userID = {
       user: {
         id: user.id,
       },
     };
-    res.json({});
+    res.json({ data });
   } catch (error) {
     res.status(500).json("Internal server error");
   }
