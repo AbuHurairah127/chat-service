@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import user from "../models/users.js";
 import { ObjectId } from "mongoose";
-interface IGetUserAuthInfoRequest extends Request {
+export interface IGetUserAuthInfoRequest extends Request {
   user?: ObjectId; // or any other type
 }
 
