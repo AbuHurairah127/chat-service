@@ -29,11 +29,17 @@ export const newConversation = async (req, res) => {
         res.status(500).json("Some error occurred");
     }
 };
+/**
+ * It gets all the conversations of a user, skipping the first 15 and limiting the next 15.
+ * @param {Request} req - Request,
+ * @param {Response} res - Response
+ */
 export const getAllConversationsOfAUser = async (req, res) => {
     try {
         const conversations = await Conversation.find({
             members: { $in: [req.params.userID] },
         })
+            .sort({ updatedAt: -1 })
             .skip(Number(req.params.startCount))
             .limit(Number(req.params.startCount + 15));
         res.status(200).json(conversations);
