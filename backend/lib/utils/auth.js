@@ -12,7 +12,6 @@ export const authUser = async (req, res, next) => {
         }
         else if (signedMessageHash === findUser?.signedMessageHash) {
             req.user = findUser._id;
-            console.log("sending Id");
             next();
         }
         else {

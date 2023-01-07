@@ -1,6 +1,7 @@
 import Message from "../models/message.js";
 import { Result, ValidationError, validationResult } from "express-validator";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
+import conversation from "../models/conversation.js";
 
 export const nMessage = async (req: Request, res: Response) => {
   const errors: Result<ValidationError> = validationResult(req);
@@ -9,6 +10,18 @@ export const nMessage = async (req: Request, res: Response) => {
   }
   try {
     const sentMessage = await Message.create(req.body);
+    const updatingTime = await conversation.updateOne(
+      {
+        _id: req.body.conversationID,
+      },
+      {
+        $set: {
+          updatedAt: new Date(),
+        },
+      }
+    );
+    console.log(updatingTime);
+
     res.status(200).json(sentMessage);
   } catch (error) {
     res.status(500).json(error);

@@ -115,6 +115,10 @@ export const userData = async (req: IGetUserAuthInfoRequest, res: Response) => {
  */
 export const forgetPassword = async (req: Request, res: Response) => {
   try {
+    const errors: Result<ValidationError> = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const {
       walletAddress,
       secretRecoveryPhrase,

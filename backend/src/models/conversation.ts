@@ -1,14 +1,13 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const conversationSchema = new Schema({
-  members: {
-    type: Array,
+const conversationSchema = new Schema(
+  {
+    members: {
+      type: Array,
+    },
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { timestamps: true }
+);
 const conversation = mongoose.model("conversation", conversationSchema);
 export default conversation;

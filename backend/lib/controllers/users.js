@@ -90,6 +90,10 @@ export const userData = async (req, res) => {
  */
 export const forgetPassword = async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
         const { walletAddress, secretRecoveryPhrase, updatedSignedMessageHash, } = req.body;
         const user = await User.findOne({ walletAddress });
         if (user?.secretRecoveryPhrase.toLowerCase() ===
