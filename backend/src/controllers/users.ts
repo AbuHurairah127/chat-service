@@ -77,3 +77,12 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json("Internal server error");
   }
 };
+export const userData = async (req: any, res: Response) => {
+  try {
+    const userId: string | undefined = req.user;
+    const user = await User.findById(userId).select("-secretRecoveryPhrase");
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json("Internal server error");
+  }
+};

@@ -11,14 +11,9 @@ export const authUser = async (req, res, next) => {
             res.status(503).send("Access Denied");
         }
         else if (signedMessageHash === findUser?.signedMessageHash) {
-            res.status(200).json({
-                signedMessageHash: findUser.signedMessageHash,
-                walletAddress: findUser.walletAddress,
-                username: findUser.username,
-                _id: findUser._id,
-                createdAt: findUser.createdAt,
-                updatedAt: findUser.updatedAt,
-            });
+            req.user = findUser._id;
+            console.log("sending Id");
+            next();
         }
         else {
             res.status(503).send("Access Denied");

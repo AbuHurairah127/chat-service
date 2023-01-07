@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import user from "../models/users.js";
 import { ObjectId } from "mongoose";
-export interface IGetUserAuthInfoRequest extends Request {
-  user?: string; // or any other type
+interface IGetUserAuthInfoRequest extends Request {
+  user?: ObjectId; // or any other type
 }
 
 export const authUser = async (
@@ -32,14 +32,9 @@ export const authUser = async (
     if (!signedMessageHash) {
       res.status(503).send("Access Denied");
     } else if (signedMessageHash === findUser?.signedMessageHash) {
-      res.status(200).json({
-        signedMessageHash: findUser.signedMessageHash,
-        walletAddress: findUser.walletAddress,
-        username: findUser.username,
-        _id: findUser._id,
-        createdAt: findUser.createdAt,
-        updatedAt: findUser.updatedAt,
-      });
+      req.user = findUser._id;
+      console.log("sending Id");
+      next();
     } else {
       res.status(503).send("Access Denied");
     }

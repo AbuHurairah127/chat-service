@@ -1,6 +1,6 @@
 import express from "express";
 import { body } from "express-validator";
-import { login, register } from "../controllers/users.js";
+import { login, register, userData } from "../controllers/users.js";
 import { authUser } from "../utils/auth.js";
 let router = express.Router();
 /* A router.post method that is used to validate the user input and then call the REGISTER controller function. */
@@ -20,7 +20,7 @@ router.post("/register",
 ], 
 //   Calling Controller Function
 register);
-// Getting user logged in with email, password and Waller Address
+/* Calling the login function. */
 router.post("/login", [
     body("message", "Password is incorrect").isLength({ min: 4 }),
     body("walletAddress", "Please enter a valid wallet address.").isLength({
@@ -28,6 +28,6 @@ router.post("/login", [
     }),
     login,
 ]);
-// Getting user data after sending the authToken
-router.get("/user-data", authUser);
+/* A router.get method that is used to get the user data. */
+router.get("/user-data", authUser, userData);
 export { router };
