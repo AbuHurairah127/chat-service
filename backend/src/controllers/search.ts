@@ -15,12 +15,12 @@ export const findUser = async (req: Request, res: Response) => {
     if (req.body.userName) {
       const user: SearchedUser | null = await User.findOne({
         userName: req.body.userName,
-      }).select("-password");
+      });
       return res.status(200).json(user);
     } else if (req.body.walletAddress) {
       const user: SearchedUser | null = await User.findOne({
         walletAddress: req.body.walletAddress,
-      }).select("-password");
+      });
       return res.status(200).json(user);
     } else {
       return res

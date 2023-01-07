@@ -1,6 +1,5 @@
 import User from "../models/users.js";
-import { validationResult, } from "express-validator";
-// import { IGetUserAuthInfoRequest } from "../utils/auth.js";
+import { validationResult } from "express-validator";
 import { ethers } from "ethers";
 export const register = async (req, res) => {
     try {
@@ -45,7 +44,7 @@ export const login = async (req, res) => {
         }
         const data = {
             user: {
-                id: user.id,
+                id: user._id,
             },
         };
         res.json({ data });
@@ -53,13 +52,4 @@ export const login = async (req, res) => {
     catch (error) {
         res.status(500).json("Internal server error");
     }
-};
-export const userData = async (req, res) => {
-    // try {
-    //   const userId: string | undefined = req.user;
-    //   const user = await User.findById(userId).select("-password");
-    //   res.status(200).json({ user });
-    // } catch (error) {
-    //   res.status(500).json("Internal server error");
-    // }
 };

@@ -1,12 +1,6 @@
 import User from "../models/users.js";
-import {
-  body,
-  Result,
-  ValidationError,
-  validationResult,
-} from "express-validator";
+import { Result, ValidationError, validationResult } from "express-validator";
 import { Request, Response } from "express";
-// import { IGetUserAuthInfoRequest } from "../utils/auth.js";
 import { ethers } from "ethers";
 
 type userID = {
@@ -51,35 +45,35 @@ export const login = async (req: Request, res: Response) => {
       message,
     }: { signedMessageHash: string; walletAddress: string; message: string } =
       req.body;
-    let user = await User.findOne({ walletAddress });
+    let user: {
+      signedMessageHash: string;
+      walletAddress: string;
+      secretRecoveryPhrase: string;
+      username: string;
+      createdAt: Date;
+      updatedAt: Date;
+      _id: string;
+    } | null = await User.findOne({ walletAddress });
     if (!user) {
       return res.status(400).json({
         error: "Sorry you are not the user of our platform. Please register!",
       });
     }
-    const signedMessageHashCompare = await ethers.utils.verifyMessage(
+    const signedMessageHashCompare: string = await ethers.utils.verifyMessage(
       message,
       signedMessageHash
     );
+
     if (signedMessageHashCompare !== walletAddress) {
       return false;
     }
     const data: userID = {
       user: {
-        id: user.id,
+        id: user._id,
       },
     };
     res.json({ data });
   } catch (error) {
     res.status(500).json("Internal server error");
   }
-};
-export const userData = async (req: any, res: Response) => {
-  // try {
-  //   const userId: string | undefined = req.user;
-  //   const user = await User.findById(userId).select("-password");
-  //   res.status(200).json({ user });
-  // } catch (error) {
-  //   res.status(500).json("Internal server error");
-  // }
 };
