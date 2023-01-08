@@ -17,7 +17,7 @@ messagesRouter.post(
   nMessage
 );
 messagesRouter.get(
-  "/get-messages/:conversationID/:messageLimit",
+  "/get-messages/:conversationID/:limit",
   [
     param(
       "conversationID",

@@ -146,7 +146,6 @@ export const forgetPassword = async (req: Request, res: Response) => {
         { $set: { signedMessageHash: updatedSignedMessageHash } }
       );
       res.status(200).send("Password Updated Successfully.");
-      console.log(updatedUser);
     }
   } catch (error) {
     res.status(501).send("Some Error Occurred.");

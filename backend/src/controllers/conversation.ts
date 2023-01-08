@@ -23,10 +23,7 @@ export const newConversation = async (req: Request, res: Response) => {
     const savedConversation = await Conversation.create({
       members: [req.body.senderID, req.body.receiverID],
     });
-    console.log(
-      "🚀 ~ file: conversation.ts:12 ~ newConversation ~ savedConversation",
-      savedConversation
-    );
+
     res.status(200).json(savedConversation);
   } catch (error) {
     res.status(500).json("Some error occurred");

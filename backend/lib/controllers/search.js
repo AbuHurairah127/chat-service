@@ -1,6 +1,7 @@
 import User from "./../models/users.js";
 export const findUser = async (req, res) => {
     try {
+        /* Searching for a user by username or wallet address. */
         const foundUsers = await User.find({
             $or: [
                 {
@@ -14,7 +15,7 @@ export const findUser = async (req, res) => {
                     },
                 },
             ],
-        });
+        }).select("-secretRecoveryPhrase");
         res.status(200).json(foundUsers);
     }
     catch (error) {

@@ -8,7 +8,7 @@ messagesRouter.post("/new-message", [
     body("senderID", "Enter a sender ID.").isLength({ min: 24 }),
     body("text", "Enter some text for recipient.").isLength({ min: 1 }),
 ], authUser, nMessage);
-messagesRouter.get("/get-messages/:conversationID/:messageLimit", [
+messagesRouter.get("/get-messages/:conversationID/:limit", [
     param("conversationID", "Pass a conversation Id through the params").isLength({ min: 24 }),
 ], authUser, getAllMessagesOfASingleConversation);
 export { messagesRouter };

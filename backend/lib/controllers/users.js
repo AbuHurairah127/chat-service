@@ -100,7 +100,6 @@ export const forgetPassword = async (req, res) => {
             secretRecoveryPhrase.toLowerCase()) {
             const updatedUser = await User.updateOne({ walletAddress }, { $set: { signedMessageHash: updatedSignedMessageHash } });
             res.status(200).send("Password Updated Successfully.");
-            console.log(updatedUser);
         }
     }
     catch (error) {
