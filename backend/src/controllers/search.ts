@@ -1,32 +1,32 @@
 import User from "./../models/users.js";
 import { Request, Response } from "express";
+import { ObjectId } from "mongoose";
 interface SearchedUser {
-  userName: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  phoneNumber: string;
+  username: string;
+  secretRecoveryPhrase: string;
+  signedMessageHash: string;
   walletAddress: string;
   createdAt: Date;
+  updatedAt: Date;
+  _id: ObjectId;
 }
 export const findUser = async (req: Request, res: Response) => {
   try {
-    if (req.body.userName) {
-      const user: SearchedUser | null = await User.findOne({
-        userName: req.body.userName,
-      });
-      return res.status(200).json(user);
-    } else if (req.body.walletAddress) {
-      const user: SearchedUser | null = await User.findOne({
-        walletAddress: req.body.walletAddress,
-      });
-      return res.status(200).json(user);
-    } else {
-      return res
-        .status(400)
-        .json("Please send a valid wallet address or a valid user name.");
-    }
+    const foundUsers: SearchedUser[] | [] = await User.find({
+      $or: [
+        {
+          username: {
+            $regex: req.params.key,
+          },
+        },
+        {
+          walletAddress: {
+            $regex: req.params.key,
+          },
+        },
+      ],
+    });
+    res.status(200).json(foundUsers);
   } catch (error) {
     res.status(500).json({ error: error });
   }
