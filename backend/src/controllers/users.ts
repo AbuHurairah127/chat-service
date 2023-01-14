@@ -29,9 +29,10 @@ export const register = async (req: Request, res: Response) => {
     const _user = await User.create({
       username: req.body.username,
       walletAddress: req.body.walletAddress,
+      imageURL: req.body.imageURL,
       signedMessageHash: req.body.signedMessageHash,
-      secretRecoveryPhrase: req.body.secretRecoveryPhrase,
     });
+    console.log("adding user");
 
     const data: userID = {
       user: { id: _user.id },
@@ -39,6 +40,7 @@ export const register = async (req: Request, res: Response) => {
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json("Some error occurred");
+    console.log(error);
   }
 };
 /**
@@ -63,12 +65,12 @@ export const login = async (req: Request, res: Response) => {
     let user: {
       signedMessageHash: string;
       walletAddress: string;
-      secretRecoveryPhrase: string;
+      imageURL: string;
       username: string;
       createdAt: Date;
       updatedAt: Date;
       _id: string;
-    } | null = await User.findOne({ walletAddress });
+    } | null = await User.findOne({ _id: "63ba75cbed98d4ee22066f0c" });
     if (!user) {
       return res.status(400).json({
         error: "Sorry you are not the user of our platform. Please register!",

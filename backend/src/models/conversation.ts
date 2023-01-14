@@ -1,11 +1,13 @@
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 const { Schema } = mongoose;
 
 const conversationSchema = new Schema(
   {
-    members: {
-      type: Array,
-    },
+    members: [
+      {
+        type: mongoose.Types.ObjectId,
+      },
+    ],
   },
   { timestamps: true }
 );

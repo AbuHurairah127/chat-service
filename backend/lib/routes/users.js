@@ -8,10 +8,10 @@ router.post("/register",
 //   Validation Applied
 [
     body("username", "Please enter the username.").isLength({ min: 3 }),
-    body("secretRecoveryPhrase", "please enter your first name.").isLength({
+    body("imageURL", "please enter your imageURl.").isLength({
         min: 3,
     }),
-    body("signedMessageHash", "Please enter your phone number.").isLength({
+    body("signedMessageHash", "Please enter your signature.").isLength({
         min: 11,
     }),
     body("walletAddress", "Please enter your wallet address.").isLength({

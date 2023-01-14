@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 const messageSchema = new Schema({
     senderID: {
-        type: String,
+        type: mongoose.Types.ObjectId,
     },
-    conversationID: { type: String },
+    conversationID: { type: mongoose.Types.ObjectId },
     text: { type: String },
     createdAt: {
         type: Date,

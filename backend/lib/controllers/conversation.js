@@ -35,12 +35,30 @@ export const newConversation = async (req, res) => {
  */
 export const getAllConversationsOfAUser = async (req, res) => {
     try {
-        const conversations = await Conversation.find({
-            members: { $in: [req.params.userID] },
-        })
-            .sort({ updatedAt: -1 })
-            .skip(Number(req.params.startCount))
-            .limit(Number(req.params.startCount + 15));
+        const conversations = await Conversation.aggregate([
+            {
+                $match: {
+                    members: { $in: [req.params.userID] },
+                },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "members",
+                    foreignField: "walletAddress",
+                    as: "membersData",
+                },
+            },
+            {
+                $sort: { updatedAt: -1 },
+            },
+            {
+                $skip: Number(req.params.startCount),
+            },
+            {
+                $limit: Number(req.params.startCount + 15),
+            },
+        ]);
         res.status(200).json(conversations);
     }
     catch (error) {
