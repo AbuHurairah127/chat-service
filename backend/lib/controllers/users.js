@@ -90,21 +90,3 @@ export const userData = async (req, res) => {
  * @param {Request} req - Request -&gt; The request object
  * @param {Response} res - Response -&gt; This is the response object that is returned to the client.
  */
-export const forgetPassword = async (req, res) => {
-    try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-        const { walletAddress, secretRecoveryPhrase, updatedSignedMessageHash, } = req.body;
-        const user = await User.findOne({ walletAddress });
-        if (user?.secretRecoveryPhrase.toLowerCase() ===
-            secretRecoveryPhrase.toLowerCase()) {
-            const updatedUser = await User.updateOne({ walletAddress }, { $set: { signedMessageHash: updatedSignedMessageHash } });
-            res.status(200).send("Password Updated Successfully.");
-        }
-    }
-    catch (error) {
-        res.status(501).send("Some Error Occurred.");
-    }
-};

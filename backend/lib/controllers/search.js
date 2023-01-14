@@ -15,7 +15,7 @@ export const findUser = async (req, res) => {
                     },
                 },
             ],
-        }).select("-secretRecoveryPhrase");
+        });
         res.status(200).json(foundUsers);
     }
     catch (error) {

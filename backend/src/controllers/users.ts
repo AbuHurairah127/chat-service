@@ -25,6 +25,7 @@ export const register = async (req: Request, res: Response) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+
     /* Creating a new user in the database. */
     const _user = await User.create({
       username: req.body.username,
@@ -102,7 +103,7 @@ export const login = async (req: Request, res: Response) => {
 export const userData = async (req: IGetUserAuthInfoRequest, res: Response) => {
   try {
     const userId: ObjectId | undefined = req.user;
-    const user = await User.findById(userId).select("-secretRecoveryPhrase");
+    const user = await User.findById(userId);
     res.status(200).json({ user });
   } catch (error) {
     res.status(500).json("Internal server error");
@@ -115,41 +116,3 @@ export const userData = async (req: IGetUserAuthInfoRequest, res: Response) => {
  * @param {Request} req - Request -&gt; The request object
  * @param {Response} res - Response -&gt; This is the response object that is returned to the client.
  */
-export const forgetPassword = async (req: Request, res: Response) => {
-  try {
-    const errors: Result<ValidationError> = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    const {
-      walletAddress,
-      secretRecoveryPhrase,
-      updatedSignedMessageHash,
-    }: {
-      walletAddress: string;
-      secretRecoveryPhrase: string;
-      updatedSignedMessageHash: string;
-    } = req.body;
-    const user: {
-      signedMessageHash: string;
-      walletAddress: string;
-      secretRecoveryPhrase: string;
-      username: string;
-      createdAt: Date;
-      updatedAt: Date;
-      _id: string;
-    } | null = await User.findOne({ walletAddress });
-    if (
-      user?.secretRecoveryPhrase.toLowerCase() ===
-      secretRecoveryPhrase.toLowerCase()
-    ) {
-      const updatedUser = await User.updateOne(
-        { walletAddress },
-        { $set: { signedMessageHash: updatedSignedMessageHash } }
-      );
-      res.status(200).send("Password Updated Successfully.");
-    }
-  } catch (error) {
-    res.status(501).send("Some Error Occurred.");
-  }
-};

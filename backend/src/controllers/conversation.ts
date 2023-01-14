@@ -27,6 +27,7 @@ export const newConversation = async (req: Request, res: Response) => {
     res.status(200).json(savedConversation);
   } catch (error) {
     res.status(500).json("Some error occurred");
+    console.log(error);
   }
 };
 

@@ -1,9 +1,7 @@
 import User from "./../models/users.js";
 import { Request, Response } from "express";
-import { ObjectId } from "mongoose";
 interface SearchedUser {
   username: string;
-  secretRecoveryPhrase: string;
   signedMessageHash: string;
   walletAddress: string;
   createdAt: Date;
@@ -25,7 +23,7 @@ export const findUser = async (req: Request, res: Response) => {
           },
         },
       ],
-    }).select("-secretRecoveryPhrase");
+    });
     res.status(200).json(foundUsers);
   } catch (error) {
     res.status(500).json({ error: error });

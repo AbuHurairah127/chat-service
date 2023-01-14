@@ -3,11 +3,9 @@ const { Schema } = mongoose;
 
 const conversationSchema = new Schema(
   {
-    members: [
-      {
-        type: mongoose.Types.ObjectId,
-      },
-    ],
+    members: {
+      type: [String],
+    },
   },
   { timestamps: true }
 );
