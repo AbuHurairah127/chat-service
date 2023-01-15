@@ -1,18 +1,5 @@
 import Conversation from "../models/conversation.js";
 import { validationResult } from "express-validator";
-/**
- * It creates a new conversation between two users.
- * @param {Request} req - Request, res: Response
- * @param {Response} res - Response
- * @returns The conversation object is being returned.
- */
-// interface SingleConversation {
-//   createdAt: Date;
-//   members?: {
-//     senderID?: string | undefined;
-//     receiverID?: string | undefined;
-//   };
-// }
 export const newConversation = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -36,17 +23,17 @@ export const newConversation = async (req, res) => {
  */
 export const getAllConversationsOfAUser = async (req, res) => {
     try {
-        const conversations = await Conversation.aggregate([
+        let conversations = await Conversation.aggregate([
             {
                 $match: {
-                    members: { $in: [req.params.userID] },
+                    members: { $in: [req.params.walletAddress] },
                 },
             },
             {
                 $lookup: {
                     from: "users",
                     localField: "members",
-                    foreignField: "_id",
+                    foreignField: "walletAddress",
                     as: "membersData",
                 },
             },
@@ -57,9 +44,16 @@ export const getAllConversationsOfAUser = async (req, res) => {
                 $skip: Number(req.params.startCount),
             },
             {
-                $limit: Number(req.params.startCount + 15),
+                $limit: Number(15),
             },
         ]);
+        // conversations = conversations.map((conversation) => {
+        // return (conversation = conversation.membersData.filter(
+        // (member: Member) => {
+        // return member.walletAddress !== req.params.walletAddress;
+        // }
+        // ));
+        // });
         res.status(200).json(conversations);
     }
     catch (error) {
