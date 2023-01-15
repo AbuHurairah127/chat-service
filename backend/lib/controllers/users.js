@@ -76,7 +76,7 @@ export const login = async (req, res) => {
 export const userData = async (req, res) => {
     try {
         const userId = req.user;
-        const user = await User.findById(userId).select("-secretRecoveryPhrase");
+        const user = await User.findById(userId);
         res.status(200).json({ user });
     }
     catch (error) {

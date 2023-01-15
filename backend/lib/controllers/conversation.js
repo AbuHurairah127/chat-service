@@ -46,7 +46,7 @@ export const getAllConversationsOfAUser = async (req, res) => {
                 $lookup: {
                     from: "users",
                     localField: "members",
-                    foreignField: "walletAddress",
+                    foreignField: "_id",
                     as: "membersData",
                 },
             },

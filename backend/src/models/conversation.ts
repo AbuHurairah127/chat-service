@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const conversationSchema = new Schema(
   {
     members: {
-      type: [String],
+      type: [mongoose.Types.ObjectId],
     },
   },
   { timestamps: true }

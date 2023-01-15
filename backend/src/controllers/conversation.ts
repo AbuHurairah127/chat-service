@@ -51,7 +51,7 @@ export const getAllConversationsOfAUser = async (
         $lookup: {
           from: "users",
           localField: "members",
-          foreignField: "walletAddress",
+          foreignField: "_id",
           as: "membersData",
         },
       },
