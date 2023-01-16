@@ -1,35 +1,20 @@
 import Message from "../models/message.js";
 import { validationResult } from "express-validator";
 import conversation from "../models/conversation.js";
-/**
- * It creates a new message and updates the conversation's updatedAt field.
- * </code>
- * @param {Request} req - Request, res: Response
- * @param {Response} res - Response
- * @returns {
- *   "errors": [
- *     {
- *       "value": "",
- *       "msg": "Invalid value",
- *       "param": "conversationID",
- *       "location": "body"
- *     }
- *   ]
- * }
- * </code>
- */
 export const nMessage = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
+    const data = req.body;
     try {
-        const sentMessage = await Message.create(req.body);
+        const sentMessage = await Message.create(data);
         await conversation.updateOne({
             _id: req.body.conversationID,
         }, {
             $set: {
                 updatedAt: new Date(),
+                lastMessage: sentMessage._id,
             },
         });
         res.status(200).json(sentMessage);

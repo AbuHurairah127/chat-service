@@ -32,8 +32,16 @@ export const getAllConversationsOfAUser = async (req, res) => {
             {
                 $lookup: {
                     from: "users",
-                    localField: "members",
-                    foreignField: "walletAddress",
+                    pipeline: [
+                        { $match: { walletAddress: req.params.walletAddress } },
+                        {
+                            $project: {
+                                username: "$username",
+                                imageURL: "$imageURL",
+                                address: "$walletAddress",
+                            },
+                        },
+                    ],
                     as: "membersData",
                 },
             },
