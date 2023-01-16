@@ -75,6 +75,14 @@ export const getAllConversationsOfAUser = async (
         },
       },
       {
+        $lookup: {
+          from: "messages",
+          localField: "lastMessage",
+          foreignField: "_id",
+          as: "lastMessage",
+        },
+      },
+      {
         $sort: { updatedAt: -1 },
       },
       {
