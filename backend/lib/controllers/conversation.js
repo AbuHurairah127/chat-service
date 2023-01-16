@@ -47,13 +47,12 @@ export const getAllConversationsOfAUser = async (req, res) => {
                 $limit: Number(15),
             },
         ]);
-        // conversations = conversations.map((conversation) => {
-        // return (conversation = conversation.membersData.filter(
-        // (member: Member) => {
-        // return member.walletAddress !== req.params.walletAddress;
-        // }
-        // ));
-        // });
+        conversations = conversations.map((conversation) => {
+            conversation.membersData = conversation.membersData.filter((member) => {
+                return member.walletAddress !== req.params.walletAddress;
+            });
+            return conversation;
+        });
         res.status(200).json(conversations);
     }
     catch (error) {
