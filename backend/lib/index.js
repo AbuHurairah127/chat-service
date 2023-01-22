@@ -1,3 +1,4 @@
+import { blockRouter } from "./routes/block.js";
 import * as dotenv from "dotenv";
 import connectToMongoDB from "./config/db.js";
 import express from "express";
@@ -17,6 +18,7 @@ app.use("/auth", router);
 app.use("/conversation", conversationRouter);
 app.use("/message", messagesRouter);
 app.use("/search", searchRouter);
+app.use("/block", blockRouter);
 // Checking if the server is successfully started or not
 app.listen(_port, () => {
     console.log(`Server started working on port is working on ${_port}`);

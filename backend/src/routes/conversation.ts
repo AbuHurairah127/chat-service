@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 import { body } from "express-validator";
-import { authUser } from "../utils/auth.js";
+// import { authUser } from "../utils/auth.js";
 import {
   getAllConversationsOfAUser,
   newConversation,

@@ -3,10 +3,11 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema(
   {
-    signedMessageHash: { type: "string", required: true },
-    walletAddress: { type: "string", required: true },
-    username: { type: "string", required: true },
-    imageURL: { type: "string", required: true },
+    signedMessageHash: { type: String, required: true },
+    walletAddress: { type: String, required: true },
+    username: { type: String, required: true },
+    imageURL: { type: String, required: true },
+    blockedFriends: { type: [String], default: [] },
   },
   { timestamps: true }
 );
