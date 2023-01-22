@@ -1,7 +1,7 @@
 import Conversation from "../models/conversation.js";
 import { Result, ValidationError, validationResult } from "express-validator";
 import { Request, Response, NextFunction } from "express";
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 /**
  * It creates a new conversation between two users.
  * @param {Request} req - Request, res: Response
@@ -15,15 +15,20 @@ import mongoose from "mongoose";
 //     receiverID?: string | undefined;
 //   };
 // }
+type LastMessage = {
+  _id: mongoose.Types.ObjectId;
+  senderID: mongoose.Types.ObjectId;
+  conversationID: mongoose.Types.ObjectId;
+  text: string;
+  createdAt: Date;
+  __v: number;
+};
 type Member = {
   _id: mongoose.Types.ObjectId;
-  signedMessageHash?: "0x8c99dad66bb0ba3f9b2a1d13f19e95a93c169cc8590cb0cbb4101a799d88691a7834e366c923a308b60abd0193abfbe25db91256dbd302abb67f333e69ebfa031b";
   walletAddress: string;
   username: string;
   imageURL: string;
-  createdAt: Date;
-  updatedAt: Date;
-  __v: 0;
+  lastMessage: [LastMessage];
 };
 export const newConversation = async (req: Request, res: Response) => {
   const errors: Result<ValidationError> = validationResult(req);
@@ -53,55 +58,86 @@ export const getAllConversationsOfAUser = async (
 ) => {
   try {
     let conversations = await Conversation.aggregate([
+      // Finding the user's conversations using $match
       {
         $match: {
           members: { $in: [req.params.walletAddress] },
         },
       },
+      // Joining the result with the users collection and getting result in the form of array named as "membersData"
       {
         $lookup: {
           from: "users",
+          let: {
+            indicator_id: "$members",
+            ddd: "0xE813d775f33a97BDA25D71240525C724423D4Cd0",
+          },
           pipeline: [
-            { $match: { walletAddress: req.params.walletAddress } },
+            {
+              $match: {
+                $expr: {
+                  $and: {
+                    $in: ["$walletAddress", "$$indicator_id"],
+                    // $not: {
+                    //   $eq: ["0xE813d775f33a97BDA25D71240525C724423D4Cd0"],
+                    // }
+                  },
+                },
+              },
+            },
             {
               $project: {
-                username: "$username",
-                imageURL: "$imageURL",
-                address: "$walletAddress",
+                name: "$name",
+                imageUrl: "$imageUrl",
+                walletAddress: "$walletAddress",
               },
             },
           ],
-          as: "membersData",
+          as: "conversationWith",
         },
       },
+      // Now looking for last message
       {
         $lookup: {
           from: "messages",
-          localField: "lastMessage",
-          foreignField: "_id",
-          as: "lastMessage",
+          let: { indicator_id: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$conversationID", "$$indicator_id"] },
+              },
+            },
+            { $sort: { _id: -1 } }, // add sort if needed (for example, if you want first 100 comments by creation date)
+            { $limit: 1 },
+          ],
+          as: "message",
         },
       },
+      // Sorting result
       {
-        $sort: { updatedAt: -1 },
+        $sort: { "message.createdAt": -1 },
       },
-      {
-        $skip: Number(req.params.startCount),
-      },
-      {
-        $limit: Number(15),
-      },
+      // Skipping and limiting response
+      // {
+      //   $skip: Number(req.query.skip),
+      // },
+      // {
+      //   $limit: Number(req.query.limit),
+      // },
     ]);
-    conversations = conversations.map((conversation) => {
-      conversation.membersData = conversation.membersData.filter(
-        (member: Member) => {
-          return member.walletAddress !== req.params.walletAddress;
-        }
-      );
-      return conversation;
-    });
 
     res.status(200).json(conversations);
+
+    // res.status(200).json("Hello World");
+
+    // conversations = conversations.map((conversation) => {
+    //   conversation.membersData = conversation.membersData.filter(
+    //     (member: Member) => {
+    //       return member.walletAddress !== req.params.walletAddress;
+    //     }
+    //   );
+    //   return conversation;
+    // });
   } catch (error) {
     res.status(500).json("Some Error Occurred");
   }

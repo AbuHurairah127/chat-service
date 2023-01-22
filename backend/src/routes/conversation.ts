@@ -17,7 +17,7 @@ conversationRouter.post(
 );
 // Route to GET all the conversation of users
 conversationRouter.get(
-  "/my-all-conversations/:walletAddress/:startCount",
+  "/my-all-conversations/:userId/:startCount",
   getAllConversationsOfAUser
 );
 export { conversationRouter };

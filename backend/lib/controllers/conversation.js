@@ -24,52 +24,83 @@ export const newConversation = async (req, res) => {
 export const getAllConversationsOfAUser = async (req, res) => {
     try {
         let conversations = await Conversation.aggregate([
+            // Finding the user's conversations using $match
             {
                 $match: {
                     members: { $in: [req.params.walletAddress] },
                 },
             },
+            // Joining the result with the users collection and getting result in the form of array named as "membersData"
             {
                 $lookup: {
                     from: "users",
+                    let: {
+                        indicator_id: "$members",
+                        ddd: "0xE813d775f33a97BDA25D71240525C724423D4Cd0",
+                    },
                     pipeline: [
-                        { $match: { walletAddress: req.params.walletAddress } },
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: {
+                                        $in: ["$walletAddress", "$$indicator_id"],
+                                        // $not: {
+                                        //   $eq: ["0xE813d775f33a97BDA25D71240525C724423D4Cd0"],
+                                        // }
+                                    },
+                                },
+                            },
+                        },
                         {
                             $project: {
-                                username: "$username",
-                                imageURL: "$imageURL",
-                                address: "$walletAddress",
+                                name: "$name",
+                                imageUrl: "$imageUrl",
+                                walletAddress: "$walletAddress",
                             },
                         },
                     ],
-                    as: "membersData",
+                    as: "conversationWith",
                 },
             },
+            // Now looking for last message
             {
                 $lookup: {
                     from: "messages",
-                    localField: "lastMessage",
-                    foreignField: "_id",
-                    as: "lastMessage",
+                    let: { indicator_id: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ["$conversationID", "$$indicator_id"] },
+                            },
+                        },
+                        { $sort: { _id: -1 } },
+                        { $limit: 1 },
+                    ],
+                    as: "message",
                 },
             },
+            // Sorting result
             {
-                $sort: { updatedAt: -1 },
+                $sort: { "message.createdAt": -1 },
             },
-            {
-                $skip: Number(req.params.startCount),
-            },
-            {
-                $limit: Number(15),
-            },
+            // Skipping and limiting response
+            // {
+            //   $skip: Number(req.query.skip),
+            // },
+            // {
+            //   $limit: Number(req.query.limit),
+            // },
         ]);
-        conversations = conversations.map((conversation) => {
-            conversation.membersData = conversation.membersData.filter((member) => {
-                return member.walletAddress !== req.params.walletAddress;
-            });
-            return conversation;
-        });
         res.status(200).json(conversations);
+        // res.status(200).json("Hello World");
+        // conversations = conversations.map((conversation) => {
+        //   conversation.membersData = conversation.membersData.filter(
+        //     (member: Member) => {
+        //       return member.walletAddress !== req.params.walletAddress;
+        //     }
+        //   );
+        //   return conversation;
+        // });
     }
     catch (error) {
         res.status(500).json("Some Error Occurred");

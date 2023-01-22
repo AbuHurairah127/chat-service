@@ -7,7 +7,6 @@ const conversationSchema = new Schema(
       type: [String],
       required: true,
     },
-    lastMessage: { type: mongoose.Types.ObjectId },
   },
   { timestamps: true }
 );
