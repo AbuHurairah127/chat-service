@@ -1,4 +1,5 @@
 import express from "express";
-import { blockUser } from "../controllers/block.js";
+import { blockUser, unblockFriend } from "../controllers/block.js";
 export let blockRouter = express.Router();
-blockRouter.post("/block-user/:walletAddress", blockUser);
+blockRouter.put("/block-user/:walletAddress", blockUser);
+blockRouter.put("/unblock-user/:walletAddress", unblockFriend);
