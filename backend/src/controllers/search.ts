@@ -20,19 +20,31 @@ export const findUser = async (req: Request, res: Response) => {
 
     /* Searching for a user by username or wallet address. */
     let foundUsers: SearchedUser[] | [] = await User.find({
-      $or: [
+      $and: [
         {
-          username: {
-            $regex: req.params.key,
-          },
+          $or: [
+            {
+              username: {
+                $regex: req.params.key,
+              },
+            },
+            {
+              walletAddress: {
+                $regex: req.params.key,
+              },
+            },
+          ],
         },
         {
           walletAddress: {
-            $regex: req.params.key,
+            $nin: searchingUserBlockList?.blockedFriends,
+            $ne: req.params.walletAddress,
           },
         },
       ],
     });
+    console.log(foundUsers);
+    res.status(200).json(foundUsers);
   } catch (error) {
     res.status(500).json({ error: error });
   }
