@@ -3,9 +3,18 @@ export const blockUser = async (req, res) => {
     try {
         const blockedUsers = await User.updateOne(
         // User Wallet Address who want to block = req.query.walletAddress
-        { walletAddress: req.params.walletAddress }, 
+        {
+            walletAddress: req.params.walletAddress,
+            blockedFriends: { $nin: [req.body.friendAddressToBlock] },
+        }, 
         // Wallet Address of the friend user want to block = req.body.friendAddressToBlock
-        { $push: { blockedFriends: req.body.friendAddressToBlock } });
+        { $push: { blockedFriends: req.body.friendAddressToBlock } }
+        // $cond: {
+        //   if: { blockedFriends: { $nin: [req.body.friendAddressToBlock] } },
+        //   then: { $push: { blockedFriends: req.body.friendAddressToBlock } },
+        //   else: { $push: { blockedFriends: req.body.friendAddressToBlock } },
+        // },
+        );
         res.status(200).send(blockedUsers);
     }
     catch (error) {
@@ -44,9 +53,6 @@ export const getAllBlockedFriends = async (req, res) => {
                 },
             },
         ]);
-        // const blockListOfUser = await User.findOne({
-        //   walletAddress: req.params.walletAddress,
-        // });
         res.status(200).json(blockListOfUser);
     }
     catch (error) {
