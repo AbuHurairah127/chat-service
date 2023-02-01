@@ -6,6 +6,7 @@ const userSchema = new Schema({
     username: { type: String, required: true },
     imageURL: { type: String, required: true },
     blockedFriends: { type: [String], default: [] },
+    blockedConversations: { type: [], default: [] },
 }, { timestamps: true });
 const user = mongoose.model("user", userSchema);
 export default user;

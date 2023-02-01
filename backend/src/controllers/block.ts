@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/users.js";
+import mongoose from "mongoose";
 export const blockUser = async (req: Request, res: Response) => {
   try {
     const blockedUsers = await User.updateOne(
@@ -10,7 +11,16 @@ export const blockUser = async (req: Request, res: Response) => {
       },
       // Wallet Address of the friend user want to block = req.body.friendAddressToBlock
 
-      { $push: { blockedFriends: req.body.friendAddressToBlock } }
+      {
+        $push: {
+          blockedFriends: req.body.friendAddressToBlock,
+          blockedConversations: {
+            conversationId: new mongoose.Types.ObjectId(),
+            blockedTime: new Date(),
+            unblockTime: null,
+          },
+        },
+      }
       // $cond: {
       //   if: { blockedFriends: { $nin: [req.body.friendAddressToBlock] } },
       //   then: { $push: { blockedFriends: req.body.friendAddressToBlock } },

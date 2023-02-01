@@ -1,6 +1,16 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
-
+const blockSchema = new Schema({
+  conversationId: {
+    type: mongoose.Types.ObjectId,
+  },
+  blockTime: {
+    type: Date,
+  },
+  unblockTime: {
+    type: Date,
+  },
+});
 const userSchema = new Schema(
   {
     signedMessageHash: { type: String, required: true },
@@ -8,6 +18,7 @@ const userSchema = new Schema(
     username: { type: String, required: true },
     imageURL: { type: String, required: true },
     blockedFriends: { type: [String], default: [] },
+    blockedConversations: { type: [blockSchema], default: [] },
   },
   { timestamps: true }
 );
