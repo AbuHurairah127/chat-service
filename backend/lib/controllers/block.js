@@ -14,7 +14,7 @@ export const blockUser = async (req, res) => {
                 blockedFriends: req.body.friendAddressToBlock,
                 blockedConversations: {
                     conversationId: new mongoose.Types.ObjectId(req.body.conversationId),
-                    blockedTime: new Date(),
+                    blockTime: new Date(),
                     unblockTime: null,
                 },
             },

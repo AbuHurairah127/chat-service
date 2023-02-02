@@ -18,7 +18,7 @@ export const blockUser = async (req: Request, res: Response) => {
             conversationId: new mongoose.Types.ObjectId(
               req.body.conversationId
             ),
-            blockedTime: new Date(),
+            blockTime: new Date(),
             unblockTime: null,
           },
         },
