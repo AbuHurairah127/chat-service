@@ -38,13 +38,21 @@ export const unblockFriend = async (req: Request, res: Response) => {
   try {
     const blockedUsers = await User.updateOne(
       // User Wallet Address who want to unblock = req.query.walletAddress
-      { walletAddress: req.params.walletAddress },
+      {
+        walletAddress: req.params.walletAddress,
+        blockedConversations: {
+          $elemMatch: {
+            conversationId: new mongoose.Types.ObjectId(
+              req.body.conversationId
+            ),
+          },
+        },
+      },
+
       // Wallet Address of the friend user want to block = req.body.friendAddressToBlock
       {
         $pull: { blockedFriends: req.body.friendAddressToUnblock },
-        // $set: { "blockedConversations.$.unblockTime":{
-        //   $cond:[]
-        // } },
+        $set: { "blockedConversations.$.unblockTime": new Date() },
       }
     );
     res.status(200).send(blockedUsers);
