@@ -1,6 +1,6 @@
 import Message from "../models/message.js";
 import { validationResult } from "express-validator";
-import conversation from "../models/conversation.js";
+import Conversation from "../models/conversation.js";
 export const nMessage = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -8,16 +8,20 @@ export const nMessage = async (req, res) => {
     }
     const data = req.body;
     try {
-        const sentMessage = await Message.create(data);
-        await conversation.updateOne({
-            _id: req.body.conversationID,
-        }, {
-            $set: {
-                updatedAt: new Date(),
-                lastMessage: sentMessage._id,
-            },
+        const conversations = Conversation.findById(data.conversationID, (err, data) => {
+            if (err) {
+                return err;
+            }
+            else {
+                return data;
+            }
         });
-        res.status(200).json(sentMessage);
+        // const sentMessage = await Message.create(data);
+        // console.log(
+        //   "🚀 ~ file: message.ts:45 ~ nMessage ~ sentMessage",
+        //   sentMessage
+        // );
+        res.status(200).json(conversations);
     }
     catch (error) {
         res.status(500).json(error);
@@ -34,15 +38,15 @@ export const getAllMessagesOfASingleConversation = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
+    // const conversationId = req.params.conversationId;
+    // const walletAddress = req.params.walletAddress;
     try {
         const messages = await Message.find({
-            conversationID: req.params.conversationID,
-        })
-            .sort({
-            updatedAt: -1,
-        })
-            .skip(Number(req.params.messageLimit))
-            .limit(Number(req.params.messageLimit) + 65);
+            conversationID: req.params.conversationId,
+        }).sort({
+            createdAt: -1,
+        });
+        console.log(messages);
         res.status(200).json(messages);
     }
     catch (error) {

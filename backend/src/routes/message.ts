@@ -16,14 +16,7 @@ messagesRouter.post(
   nMessage
 );
 messagesRouter.get(
-  "/get-messages/:conversationID/:limit",
-  [
-    param(
-      "conversationID",
-      "Pass a conversation Id through the params"
-    ).isLength({ min: 24 }),
-  ],
-  authUser,
+  "/get-messages/:userId/:conversationId",
   getAllMessagesOfASingleConversation
 );
 export { messagesRouter };

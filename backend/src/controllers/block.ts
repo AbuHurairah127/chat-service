@@ -14,13 +14,6 @@ export const blockUser = async (req: Request, res: Response) => {
       {
         $push: {
           blockedFriends: req.body.friendAddressToBlock,
-          blockedConversations: {
-            conversationId: new mongoose.Types.ObjectId(
-              req.body.conversationId
-            ),
-            blockTime: new Date(),
-            unblockTime: null,
-          },
         },
       }
       // $cond: {
@@ -40,19 +33,12 @@ export const unblockFriend = async (req: Request, res: Response) => {
       // User Wallet Address who want to unblock = req.query.walletAddress
       {
         walletAddress: req.params.walletAddress,
-        blockedConversations: {
-          $elemMatch: {
-            conversationId: new mongoose.Types.ObjectId(
-              req.body.conversationId
-            ),
-          },
-        },
+        blockedFriends: { $in: [req.body.friendAddressToBlock] },
       },
 
       // Wallet Address of the friend user want to block = req.body.friendAddressToBlock
       {
         $pull: { blockedFriends: req.body.friendAddressToUnblock },
-        $set: { "blockedConversations.$.unblockTime": new Date() },
       }
     );
     res.status(200).send(blockedUsers);
