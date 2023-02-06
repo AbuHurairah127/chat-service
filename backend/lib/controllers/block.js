@@ -1,16 +1,19 @@
 import User from "../models/users.js";
+import mongoose from "mongoose";
 export const blockUser = async (req, res) => {
     try {
-        const blockedUsers = await User.updateOne(
+        const blockedConversations = await User.updateOne(
         // User Wallet Address who want to block = req.query.walletAddress
         {
             walletAddress: req.params.walletAddress,
-            blockedFriends: { $nin: [req.body.friendAddressToBlock] },
+            blockedFriends: {
+                $nin: [new mongoose.Types.ObjectId(req.body.conversationIdToBlock)],
+            },
         }, 
-        // Wallet Address of the friend user want to block = req.body.friendAddressToBlock
+        // ConversationId of the friend user want to block = req.body.friendAddressToBlock
         {
             $push: {
-                blockedFriends: req.body.friendAddressToBlock,
+                blockedFriends: new mongoose.Types.ObjectId(req.body.conversationIdToBlock),
             },
         }
         // $cond: {
@@ -19,7 +22,7 @@ export const blockUser = async (req, res) => {
         //   else: { $push: { blockedFriends: req.body.friendAddressToBlock } },
         // },
         );
-        res.status(200).send(blockedUsers);
+        res.status(200).send(blockedConversations);
     }
     catch (error) {
         res.status(503).send("Some Error Occurred");
@@ -27,17 +30,21 @@ export const blockUser = async (req, res) => {
 };
 export const unblockFriend = async (req, res) => {
     try {
-        const blockedUsers = await User.updateOne(
+        const unblockedConversation = await User.updateOne(
         // User Wallet Address who want to unblock = req.query.walletAddress
         {
             walletAddress: req.params.walletAddress,
-            blockedFriends: { $in: [req.body.friendAddressToBlock] },
+            blockedFriends: {
+                $in: [new mongoose.Types.ObjectId(req.body.friendAddressToBlock)],
+            },
         }, 
         // Wallet Address of the friend user want to block = req.body.friendAddressToBlock
         {
-            $pull: { blockedFriends: req.body.friendAddressToUnblock },
+            $pull: {
+                blockedFriends: new mongoose.Types.ObjectId(req.body.friendAddressToUnblock),
+            },
         });
-        res.status(200).send(blockedUsers);
+        res.status(200).send(unblockedConversation);
     }
     catch (error) {
         res.status(503).send("Some Error Occurred");
@@ -49,9 +56,9 @@ export const getAllBlockedFriends = async (req, res) => {
             { $match: { walletAddress: req.params.walletAddress } },
             {
                 $lookup: {
-                    from: "users",
-                    localField: "blockedFriends",
-                    foreignField: "walletAddress",
+                    from: "conversations",
+                    localField: "blockedConversations",
+                    foreignField: "_id",
                     as: "blockedFriendsData",
                 },
             },
