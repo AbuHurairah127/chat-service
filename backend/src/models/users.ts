@@ -7,7 +7,7 @@ const userSchema = new Schema(
     walletAddress: { type: String, required: true },
     username: { type: String, required: true },
     imageURL: { type: String, required: true },
-    blockedFriends: { type: [mongoose.Types.ObjectId], default: [] },
+    blockedConversations: { type: [mongoose.Types.ObjectId], default: [] },
   },
   { timestamps: true }
 );

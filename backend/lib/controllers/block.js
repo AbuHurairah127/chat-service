@@ -6,20 +6,20 @@ export const blockUser = async (req, res) => {
         // User Wallet Address who want to block = req.query.walletAddress
         {
             walletAddress: req.params.walletAddress,
-            blockedFriends: {
+            blockedConversations: {
                 $nin: [new mongoose.Types.ObjectId(req.body.conversationIdToBlock)],
             },
         }, 
         // ConversationId of the friend user want to block = req.body.friendAddressToBlock
         {
             $push: {
-                blockedFriends: new mongoose.Types.ObjectId(req.body.conversationIdToBlock),
+                blockedConversations: new mongoose.Types.ObjectId(req.body.conversationIdToBlock),
             },
         }
         // $cond: {
-        //   if: { blockedFriends: { $nin: [req.body.friendAddressToBlock] } },
-        //   then: { $push: { blockedFriends: req.body.friendAddressToBlock } },
-        //   else: { $push: { blockedFriends: req.body.friendAddressToBlock } },
+        //   if: { blockedConversations: { $nin: [req.body.friendAddressToBlock] } },
+        //   then: { $push: { blockedConversations: req.body.friendAddressToBlock } },
+        //   else: { $push: { blockedConversations: req.body.friendAddressToBlock } },
         // },
         );
         res.status(200).send(blockedConversations);
@@ -34,14 +34,14 @@ export const unblockFriend = async (req, res) => {
         // User Wallet Address who want to unblock = req.query.walletAddress
         {
             walletAddress: req.params.walletAddress,
-            blockedFriends: {
-                $in: [new mongoose.Types.ObjectId(req.body.friendAddressToBlock)],
+            blockedConversations: {
+                $in: [new mongoose.Types.ObjectId(req.body.conversationIdToUnblock)],
             },
         }, 
         // Wallet Address of the friend user want to block = req.body.friendAddressToBlock
         {
             $pull: {
-                blockedFriends: new mongoose.Types.ObjectId(req.body.friendAddressToUnblock),
+                blockedConversations: new mongoose.Types.ObjectId(req.body.conversationIdToUnblock),
             },
         });
         res.status(200).send(unblockedConversation);
@@ -52,6 +52,7 @@ export const unblockFriend = async (req, res) => {
 };
 export const getAllBlockedFriends = async (req, res) => {
     try {
+        console.log("blockListOfUser");
         const blockListOfUser = await User.aggregate([
             { $match: { walletAddress: req.params.walletAddress } },
             {
@@ -62,6 +63,33 @@ export const getAllBlockedFriends = async (req, res) => {
                     as: "blockedFriendsData",
                 },
             },
+            { $unwind: "$blockedFriendsData" },
+            {
+                $lookup: {
+                    from: "users",
+                    let: { indicator_id: "$blockedFriendsData.members" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $in: ["$walletAddress", "$$indicator_id"] },
+                                        { $ne: ["$walletAddress", req.params.walletAddress] },
+                                    ],
+                                },
+                            },
+                        },
+                        {
+                            $project: {
+                                name: "$username",
+                                imageUrl: "$imageUrl",
+                                walletAddress: "$walletAddress",
+                            },
+                        },
+                    ],
+                    as: "blockedFriendsData",
+                },
+            },
             {
                 $project: {
                     blockedFriendsData: 1,
@@ -69,6 +97,7 @@ export const getAllBlockedFriends = async (req, res) => {
                 },
             },
         ]);
+        console.log("blockListOfUser");
         res.status(200).json(blockListOfUser);
     }
     catch (error) {
