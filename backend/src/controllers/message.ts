@@ -34,22 +34,28 @@ export const nMessage = async (req: Request, res: Response) => {
   }
   const data = req.body;
   try {
-    const conversations = Conversation.findById(
-      data.conversationID,
-      (err: any, data: any) => {
+    const conversations = User.findOne(
+      {
+        blockedConversations: { $in: data.conversationId },
+      },
+      { _id: 1 },
+      async (err: any, response: any) => {
         if (err) {
-          return err;
+          return res.status(200).json(err);
+        } else if (response) {
+          if (response._id == data.senderId) {
+            return res.status(200).send("This conversation is blocked by you.");
+          } else {
+            return res
+              .status(200)
+              .send("This conversation is blocked by the other person.");
+          }
         } else {
-          return data;
+          const sentMessage = await Message.create(data);
+          return res.status(200).json(sentMessage);
         }
       }
     );
-    // const sentMessage = await Message.create(data);
-    // console.log(
-    //   "🚀 ~ file: message.ts:45 ~ nMessage ~ sentMessage",
-    //   sentMessage
-    // );
-    res.status(200).json(conversations);
   } catch (error) {
     res.status(500).json(error);
   }

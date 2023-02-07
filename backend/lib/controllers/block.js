@@ -15,13 +15,7 @@ export const blockUser = async (req, res) => {
             $push: {
                 blockedConversations: new mongoose.Types.ObjectId(req.body.conversationIdToBlock),
             },
-        }
-        // $cond: {
-        //   if: { blockedConversations: { $nin: [req.body.friendAddressToBlock] } },
-        //   then: { $push: { blockedConversations: req.body.friendAddressToBlock } },
-        //   else: { $push: { blockedConversations: req.body.friendAddressToBlock } },
-        // },
-        );
+        });
         res.status(200).send(blockedConversations);
     }
     catch (error) {

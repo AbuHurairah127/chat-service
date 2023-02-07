@@ -23,7 +23,6 @@ export const findUser = async (req, res) => {
                 },
                 {
                     walletAddress: {
-                        $nin: searchingUserBlockList?.blockedFriends,
                         $ne: req.params.walletAddress,
                     },
                 },

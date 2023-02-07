@@ -9,8 +9,8 @@ let messagesRouter: Router = express.Router();
 messagesRouter.post(
   "/new-message",
   [
-    body("conversationID", "Enter a conversation ID.").isLength({ min: 24 }),
-    body("senderID", "Enter a sender ID.").isLength({ min: 24 }),
+    body("conversationId", "Enter a conversation ID.").isLength({ min: 24 }),
+    body("senderId", "Enter a sender ID.").isLength({ min: 24 }),
     body("text", "Enter some text for recipient.").isLength({ min: 1 }),
   ],
   nMessage
