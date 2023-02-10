@@ -7,6 +7,14 @@ const conversationSchema = new Schema(
       type: [String],
       required: true,
     },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
+    blockedBy: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true }
 );

@@ -1,23 +1,21 @@
 import { Request, Response } from "express";
 import User from "../models/users.js";
 import mongoose from "mongoose";
+import Conversation from "../models/conversation.js";
 export const blockUser = async (req: Request, res: Response) => {
   try {
-    const blockedConversations = await User.updateOne(
+    const blockedConversations = await Conversation.updateOne(
       // User Wallet Address who want to block = req.query.walletAddress
       {
-        walletAddress: req.params.walletAddress,
-        blockedConversations: {
-          $nin: [new mongoose.Types.ObjectId(req.body.conversationIdToBlock)],
-        },
+        _id: req.body.conversationIdToBlock,
+        isBlocked: false,
       },
       // ConversationId of the friend user want to block = req.body.friendAddressToBlock
 
       {
-        $push: {
-          blockedConversations: new mongoose.Types.ObjectId(
-            req.body.conversationIdToBlock
-          ),
+        $set: {
+          isBlocked: true,
+          blockedBy: req.params.walletAddress,
         },
       }
     );
@@ -28,21 +26,18 @@ export const blockUser = async (req: Request, res: Response) => {
 };
 export const unblockFriend = async (req: Request, res: Response) => {
   try {
-    const unblockedConversation = await User.updateOne(
+    const unblockedConversation = await Conversation.updateOne(
       // User Wallet Address who want to unblock = req.query.walletAddress
       {
-        walletAddress: req.params.walletAddress,
-        blockedConversations: {
-          $in: [new mongoose.Types.ObjectId(req.body.conversationIdToUnblock)],
-        },
+        _id: req.body.conversationIdToUnblock,
+        isBlocked: true,
       },
 
       // Wallet Address of the friend user want to block = req.body.friendAddressToBlock
       {
-        $pull: {
-          blockedConversations: new mongoose.Types.ObjectId(
-            req.body.conversationIdToUnblock
-          ),
+        $set: {
+          isBlocked: false,
+          blockedBy: null,
         },
       }
     );
