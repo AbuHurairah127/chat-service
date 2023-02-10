@@ -1,4 +1,3 @@
-import User from "../models/users.js";
 import Conversation from "../models/conversation.js";
 export const blockUser = async (req, res) => {
     try {
@@ -44,22 +43,12 @@ export const unblockFriend = async (req, res) => {
 };
 export const getAllBlockedFriends = async (req, res) => {
     try {
-        console.log("blockListOfUser");
-        const blockListOfUser = await User.aggregate([
-            { $match: { walletAddress: req.params.walletAddress } },
-            {
-                $lookup: {
-                    from: "conversations",
-                    localField: "blockedConversations",
-                    foreignField: "_id",
-                    as: "blockedFriendsData",
-                },
-            },
-            { $unwind: "$blockedFriendsData" },
+        const blockListOfUser = await Conversation.aggregate([
+            { $match: { blockedBy: req.params.walletAddress } },
             {
                 $lookup: {
                     from: "users",
-                    let: { indicator_id: "$blockedFriendsData.members" },
+                    let: { indicator_id: "$members" },
                     pipeline: [
                         {
                             $match: {
@@ -89,7 +78,6 @@ export const getAllBlockedFriends = async (req, res) => {
                 },
             },
         ]);
-        console.log("blockListOfUser");
         res.status(200).json(blockListOfUser);
     }
     catch (error) {
