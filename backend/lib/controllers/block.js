@@ -27,6 +27,7 @@ export const unblockFriend = async (req, res) => {
         {
             _id: req.body.conversationIdToUnblock,
             isBlocked: true,
+            blockedBy: req.params.walletAddress,
         }, 
         // Wallet Address of the friend user want to block = req.body.friendAddressToBlock
         {

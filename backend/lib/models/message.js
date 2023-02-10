@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 const messageSchema = new Schema({
-    senderID: {
+    senderId: {
         type: mongoose.Types.ObjectId,
+        required: true,
     },
-    conversationID: { type: mongoose.Types.ObjectId },
-    text: { type: String },
+    conversationId: { type: mongoose.Types.ObjectId, required: true },
+    text: { type: String, required: true },
     createdAt: {
         type: Date,
         default: Date.now,

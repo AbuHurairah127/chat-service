@@ -34,16 +34,17 @@ export const nMessage = async (req: Request, res: Response) => {
   }
   const data = req.body;
   try {
-    const conversations = User.findOne(
+    const conversations = Conversation.findOne(
       {
-        blockedConversations: { $in: data.conversationId },
+        _id: req.body.conversationId,
+        isBlocked: false,
       },
       { _id: 1 },
       async (err: any, response: any) => {
         if (err) {
           return res.status(200).json(err);
-        } else if (response) {
-          if (response._id == data.senderId) {
+        } else if (!response) {
+          if (response.blockedBy == req.params.walletAddress) {
             return res.status(200).send("This conversation is blocked by you.");
           } else {
             return res
@@ -51,6 +52,8 @@ export const nMessage = async (req: Request, res: Response) => {
               .send("This conversation is blocked by the other person.");
           }
         } else {
+          console.log(data);
+
           const sentMessage = await Message.create(data);
           return res.status(200).json(sentMessage);
         }

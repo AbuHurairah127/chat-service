@@ -1,6 +1,6 @@
 import Message from "../models/message.js";
 import { validationResult } from "express-validator";
-import User from "../models/users.js";
+import Conversation from "../models/conversation.js";
 export const nMessage = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -8,14 +8,15 @@ export const nMessage = async (req, res) => {
     }
     const data = req.body;
     try {
-        const conversations = User.findOne({
-            blockedConversations: { $in: data.conversationId },
+        const conversations = Conversation.findOne({
+            _id: req.body.conversationId,
+            isBlocked: false,
         }, { _id: 1 }, async (err, response) => {
             if (err) {
                 return res.status(200).json(err);
             }
-            else if (response) {
-                if (response._id == data.senderId) {
+            else if (!response) {
+                if (response.blockedBy == req.params.walletAddress) {
                     return res.status(200).send("This conversation is blocked by you.");
                 }
                 else {
@@ -25,6 +26,7 @@ export const nMessage = async (req, res) => {
                 }
             }
             else {
+                console.log(data);
                 const sentMessage = await Message.create(data);
                 return res.status(200).json(sentMessage);
             }

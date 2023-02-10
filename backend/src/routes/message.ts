@@ -7,7 +7,7 @@ import {
 import { authUser } from "../utils/auth.js";
 let messagesRouter: Router = express.Router();
 messagesRouter.post(
-  "/new-message",
+  "/new-message/:walletAddress",
   [
     body("conversationId", "Enter a conversation ID.").isLength({ min: 24 }),
     body("senderId", "Enter a sender ID.").isLength({ min: 24 }),
