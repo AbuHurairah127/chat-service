@@ -52,8 +52,6 @@ export const nMessage = async (req: Request, res: Response) => {
               .send("This conversation is blocked by the other person.");
           }
         } else {
-          console.log(data);
-
           const sentMessage = await Message.create(data);
           return res.status(200).json(sentMessage);
         }
