@@ -10,7 +10,7 @@ const conversationSchema = new Schema({
         default: false,
     },
     blockedBy: {
-        type: String,
+        type: mongoose.Types.ObjectId,
         default: null,
     },
 }, { timestamps: true });

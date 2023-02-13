@@ -2,16 +2,16 @@ import Conversation from "../models/conversation.js";
 export const blockUser = async (req, res) => {
     try {
         const blockedConversations = await Conversation.updateOne(
-        // User Wallet Address who want to block = req.query.walletAddress
+        // ConversationId of the friend user want to block = req.body.conversationIdToBlock
         {
             _id: req.body.conversationIdToBlock,
             isBlocked: false,
         }, 
-        // ConversationId of the friend user want to block = req.body.friendAddressToBlock
+        // User Wallet Address who want to block = req.query.walletAddress
         {
             $set: {
                 isBlocked: true,
-                blockedBy: req.params.walletAddress,
+                blockedBy: req.body.walletAddress,
             },
         });
         res.status(200).send(blockedConversations);

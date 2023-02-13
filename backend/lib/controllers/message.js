@@ -26,7 +26,6 @@ export const nMessage = async (req, res) => {
                 }
             }
             else {
-                console.log(data);
                 const sentMessage = await Message.create(data);
                 return res.status(200).json(sentMessage);
             }
