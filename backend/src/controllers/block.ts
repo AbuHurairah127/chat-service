@@ -15,7 +15,7 @@ export const blockUser = async (req: Request, res: Response) => {
       {
         $set: {
           isBlocked: true,
-          blockedBy: req.body.userId,
+          blockedBy: new mongoose.Types.ObjectId(req.body.userId),
         },
       }
     );
@@ -51,7 +51,7 @@ export const unblockFriend = async (req: Request, res: Response) => {
 export const getAllBlockedFriends = async (req: Request, res: Response) => {
   try {
     const blockListOfUser = await Conversation.aggregate([
-      { $match: { blockedBy: req.params.walletAddress } },
+      { $match: { blockedBy: new mongoose.Types.ObjectId(req.params.userId) } },
       {
         $lookup: {
           from: "users",
