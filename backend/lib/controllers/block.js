@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Conversation from "../models/conversation.js";
 export const blockUser = async (req, res) => {
     try {
@@ -11,7 +12,7 @@ export const blockUser = async (req, res) => {
         {
             $set: {
                 isBlocked: true,
-                blockedBy: req.body.walletAddress,
+                blockedBy: new mongoose.Types.ObjectId(req.body.userId),
             },
         });
         res.status(200).send(blockedConversations);
@@ -45,7 +46,7 @@ export const unblockFriend = async (req, res) => {
 export const getAllBlockedFriends = async (req, res) => {
     try {
         const blockListOfUser = await Conversation.aggregate([
-            { $match: { blockedBy: req.params.walletAddress } },
+            { $match: { blockedBy: new mongoose.Types.ObjectId(req.params.userId) } },
             {
                 $lookup: {
                     from: "users",

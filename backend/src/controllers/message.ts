@@ -34,17 +34,17 @@ export const nMessage = async (req: Request, res: Response) => {
   }
   const data = req.body;
   try {
-    const conversations = Conversation.findOne(
+    const conversations = Conversation.findOneAndUpdate(
       {
         _id: req.body.conversationId,
         isBlocked: false,
       },
-      { _id: 1 },
+      { updatedAt: new Date() },
       async (err: any, response: any) => {
         if (err) {
           return res.status(200).json(err);
         } else if (!response) {
-          if (response.blockedBy == req.params.walletAddress) {
+          if (response.blockedBy == req.body.senderID) {
             return res.status(200).send("This conversation is blocked by you.");
           } else {
             return res
